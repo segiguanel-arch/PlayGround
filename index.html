@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#07060b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aether Kombat">
+  <meta name="description" content="Aether Kombat — a tactical lane card duel with a card forge. Build decks, forge your own cards, and fight for the Ninth Gate.">
+  <title>Aether Kombat — Tactical Card Duel</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="preload" href="assets/fonts/cinzel.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="stylesheet" href="css/library-forge.css">
+  <link rel="stylesheet" href="css/battle.css">
+</head>
+<body>
+  <canvas id="ambient" aria-hidden="true"></canvas>
+  <div class="app-glow" aria-hidden="true"></div>
+
+  <svg class="sprite" aria-hidden="true" width="0" height="0">
+    <defs>
+      <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2c.4 3.6-1.7 4.6-3.2 6.4C6.9 10.5 5.8 12.3 5.8 14.6A6.2 6.2 0 0 0 12 21a6.2 6.2 0 0 0 6.2-6.4c0-2.4-1.2-4.3-2.9-6.1-.9-1-1.9-2-2.2-3.4-1 1.1-.9 2.5-.6 3.9-1.6-.9-2.4-2.5-2.2-4.3C10.8 3.6 11.4 2.8 12 2Z" fill="currentColor"/></symbol>
+      <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 4C10 4 4 8.5 4 15.5c0 2 .6 3.5.6 3.5S7 16 12 14c-3 2.4-5.2 5.5-5.6 6 6.6 1.3 13.6-3 13.6-16Z" fill="currentColor"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="currentColor"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5 8.7 8.7 0 1 0 20.5 14.6Z" fill="currentColor"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.4" fill="currentColor"/><path d="M12 1.8v3M12 19.2v3M22.2 12h-3M4.8 12h-3M19.2 4.8l-2.1 2.1M6.9 17.1l-2.1 2.1M19.2 19.2l-2.1-2.1M6.9 6.9 4.8 4.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 8.6A3.4 3.4 0 1 0 12 15.4 3.4 3.4 0 0 0 12 8.6Zm7.4 3.4c0 .5 0 1-.1 1.4l2 1.5-2 3.4-2.4-1a7.7 7.7 0 0 1-2.4 1.4l-.4 2.5h-4l-.4-2.5a7.7 7.7 0 0 1-2.4-1.4l-2.4 1-2-3.4 2-1.5a8.8 8.8 0 0 1 0-2.8l-2-1.5 2-3.4 2.4 1a7.7 7.7 0 0 1 2.4-1.4L10 4h4l.4 2.5a7.7 7.7 0 0 1 2.4 1.4l2.4-1 2 3.4-2 1.5c.1.4.2.9.2 1.2Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.4 9.2A2.7 2.7 0 0 1 12 7.4c1.6 0 2.7 1 2.7 2.3 0 2.4-2.7 2.4-2.7 4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="17.3" r="1.1" fill="currentColor"/></symbol>
+      <symbol id="i-sword" viewBox="0 0 24 24"><path d="M20 3l-9 9M20 3v4.5M20 3h-4.5M11 12l-7 7M7 15l2 2M14.5 8.5 16 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-cards" viewBox="0 0 24 24"><rect x="7" y="3.5" width="12" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 6.5V19a2 2 0 0 0 2 2h9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m13 8 1.4 2.8 3 .4-2.2 2.1.5 3-2.7-1.4-2.7 1.4.5-3-2.2-2.1 3-.4L13 8Z" fill="currentColor" opacity=".8"/></symbol>
+      <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 2.5l2.1 6.2 6.4 2.3-6.4 2.3L12 19.5l-2.1-6.2-6.4-2.3 6.4-2.3L12 2.5Z" fill="currentColor"/><path d="M19.5 16.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z" fill="currentColor" opacity=".7"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m15 15 5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 10.5v6M14 10.5v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L20 8l-4-4L4 16v4ZM14.5 5.5l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="13.2" r="3.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.5 7l1.4-2.4h4.2L15.5 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8.6" cy="9.4" r="1.5" fill="currentColor"/><path d="m4.5 17 5-5 4 4 2.5-2.5L20 17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 7h3.2c2 0 3.4 1.1 4.6 2.7l2.4 3.2c1.2 1.6 2.6 2.7 4.6 2.7H21M3 17h3.2c2 0 3.4-1.1 4.6-2.7M13.2 9.3C14.4 7.6 15.8 6.5 17.8 6.5H21M18 3.5 21 6.5l-3 3M18 14.5l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5h3L12 5v14l-5-4.5H4v-5Z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.3 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5h3L12 5v14l-5-4.5H4v-5Z" fill="currentColor"/><path d="m16 9.5 5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-tilt" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.5" transform="rotate(-12 12 12)"/><path d="M2 9c1.5 1.3 1.5 4.7 0 6M22 9c-1.5 1.3-1.5 4.7 0 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".55"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.5 20 6v6c0 5-3.4 8.2-8 9.5C7.4 20.2 4 17 4 12V6l8-3.5Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.5 12 2.4 2.4 4.6-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0V4ZM8 6H4.5v1.5A3.5 3.5 0 0 0 8 11M16 6h3.5v1.5A3.5 3.5 0 0 1 16 11M12 13v4M8.5 21h7M10 17h4v4h-4z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="15" r="1.4" fill="currentColor"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="boot" id="boot">
+    <div class="boot-mark">
+      <span class="boot-rune">✦</span>
+      <span class="boot-title">AETHER</span>
+      <span class="boot-sub">KOMBAT</span>
+    </div>
+    <div class="boot-line"><i></i></div>
+  </div>
+
+  <div class="app" id="app">
+    <!-- HOME ------------------------------------------------------------------>
+    <section id="screen-home" class="screen screen-home is-active" aria-label="Aether Kombat home">
+      <div class="home">
+        <header class="home-top">
+          <button class="profile-pill" id="btn-profile" aria-label="Edit player profile">
+            <span class="profile-avatar" id="home-avatar"></span>
+            <span class="profile-copy">
+              <span class="profile-name" id="home-name">Wanderer</span>
+              <span class="profile-rank" id="home-rank">Ashwalker</span>
+            </span>
+          </button>
+          <div class="home-top-actions">
+            <button class="icon-btn" id="btn-help-home" aria-label="How to play"><svg class="ic"><use href="#i-help"/></svg></button>
+            <button class="icon-btn" id="btn-settings-home" aria-label="Settings"><svg class="ic"><use href="#i-settings"/></svg></button>
+          </div>
+        </header>
+
+        <div class="home-hero">
+          <div class="home-cards" id="home-cards" aria-hidden="true"></div>
+          <div class="home-title-wrap">
+            <p class="eyebrow"><span></span>The Ninth Gate<span></span></p>
+            <h1 class="logo">
+              <span class="logo-aether">AETHER</span>
+              <span class="logo-kombat">KOMBAT</span>
+            </h1>
+            <p class="tagline">Forge your legend.<br>Command the lanes.</p>
+          </div>
+        </div>
+
+        <div class="home-actions">
+          <button class="btn btn-primary btn-play" id="btn-play">
+            <span class="btn-play-ico"><svg class="ic"><use href="#i-sword"/></svg></span>
+            <span class="btn-play-copy"><b>Enter the Arena</b><small id="home-deck-label">Starter Ascent · 24 cards</small></span>
+            <svg class="ic btn-arrow"><use href="#i-arrow"/></svg>
+          </button>
+          <div class="quick-grid">
+            <button class="quick-card" data-nav="decks">
+              <span class="quick-glow"></span>
+              <svg class="ic"><use href="#i-cards"/></svg>
+              <b>Decks</b>
+              <small id="quick-decks-sub">1 deck</small>
+            </button>
+            <button class="quick-card" data-nav="forge">
+              <span class="quick-glow"></span>
+              <svg class="ic"><use href="#i-sparkle"/></svg>
+              <b>Card Forge</b>
+              <small>Create a legend</small>
+            </button>
+            <button class="quick-card" data-nav="collection">
+              <span class="quick-glow"></span>
+              <svg class="ic"><use href="#i-trophy"/></svg>
+              <b>Collection</b>
+              <small id="quick-collection-sub">36 cards</small>
+            </button>
+          </div>
+        </div>
+
+        <footer class="home-footer">
+          <div class="record-strip">
+            <div><b id="stat-wins">0</b><span>Wins</span></div>
+            <i></i>
+            <div><b id="stat-losses">0</b><span>Losses</span></div>
+            <i></i>
+            <div><b id="stat-cards">36</b><span>Cards</span></div>
+          </div>
+          <div class="meta-row">
+            <button class="meta-btn" id="btn-tilt-home" aria-pressed="false">
+              <svg class="ic"><use href="#i-tilt"/></svg><span>Tilt</span><b>Off</b>
+            </button>
+            <button class="meta-btn" id="btn-sound-home" aria-pressed="true">
+              <svg class="ic"><use href="#i-sound"/></svg><span>Sound</span><b>On</b>
+            </button>
+            <span class="meta-version">v1.0</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- LIBRARY --------------------------------------------------------------->
+    <section id="screen-library" class="screen screen-library" aria-label="Card hall">
+      <div class="screen-shell">
+        <header class="screen-head">
+          <button class="icon-btn" data-back aria-label="Back"><svg class="ic"><use href="#i-back"/></svg></button>
+          <div class="screen-title">
+            <p class="eyebrow">The Archive</p>
+            <h2>Card Hall</h2>
+          </div>
+          <button class="icon-btn" id="btn-library-help" aria-label="How to build a deck"><svg class="ic"><use href="#i-help"/></svg></button>
+        </header>
+
+        <div class="segmented lib-tabs" role="tablist" aria-label="Library sections">
+          <button class="seg is-active" data-libtarget="decks" role="tab" aria-selected="true">Deck Builder</button>
+          <button class="seg" data-libtarget="collection" role="tab" aria-selected="false">Collection</button>
+          <span class="seg-thumb" aria-hidden="true"></span>
+        </div>
+
+        <div class="screen-scroll" id="library-scroll">
+          <div id="lib-decks" class="lib-panel">
+            <div class="deck-chips" id="deck-chips"></div>
+
+            <section class="deck-panel panel">
+              <div class="deck-panel-head">
+                <div>
+                  <div class="deck-name-row">
+                    <h3 id="deck-name">Starter Ascent</h3>
+                    <button class="mini-icon" id="btn-deck-rename" aria-label="Rename deck"><svg class="ic"><use href="#i-edit"/></svg></button>
+                    <button class="mini-icon" id="btn-deck-delete" aria-label="Delete deck"><svg class="ic"><use href="#i-trash"/></svg></button>
+                  </div>
+                  <p id="deck-sub" class="muted">24 of 24 cards</p>
+                </div>
+                <div class="deck-validity" id="deck-validity"><svg class="ic"><use href="#i-shield"/></svg><span>Legal</span></div>
+              </div>
+
+              <div class="deck-meta-row">
+                <div class="curve" id="deck-curve" aria-label="Mana curve"></div>
+                <div class="deck-facts">
+                  <span><b id="deck-avg">2.8</b> avg aether</span>
+                  <span><b id="deck-units">24</b> units</span>
+                </div>
+              </div>
+
+              <div class="deck-card-strip" id="deck-cards" aria-label="Cards in deck"></div>
+
+              <div class="deck-actions">
+                <button class="btn btn-ghost btn-sm" id="btn-autobuild"><svg class="ic"><use href="#i-shuffle"/></svg>Auto-build</button>
+                <button class="btn btn-primary btn-sm" id="btn-deck-play"><svg class="ic"><use href="#i-sword"/></svg>Fight</button>
+              </div>
+            </section>
+
+            <div class="pool-head">
+              <div>
+                <p class="eyebrow">Add to deck</p>
+                <h3>Your collection</h3>
+              </div>
+              <span class="counter-pill" id="deck-counter">0 / 24</span>
+            </div>
+
+            <div class="filter-bar">
+              <label class="search-field">
+                <svg class="ic"><use href="#i-search"/></svg>
+                <input id="deck-search" type="search" placeholder="Search cards" autocomplete="off" spellcheck="false">
+              </label>
+              <div class="el-filter" id="deck-el-filter" role="group" aria-label="Filter by element"></div>
+            </div>
+
+            <div class="card-grid" id="deck-pool"></div>
+            <div class="empty-note" id="deck-pool-empty" hidden>No cards match that search.</div>
+          </div>
+
+          <div id="lib-collection" class="lib-panel" hidden>
+            <div class="filter-bar">
+              <label class="search-field">
+                <svg class="ic"><use href="#i-search"/></svg>
+                <input id="collection-search" type="search" placeholder="Search the archive" autocomplete="off" spellcheck="false">
+              </label>
+              <button class="btn btn-ghost btn-sm" id="btn-new-custom"><svg class="ic"><use href="#i-sparkle"/></svg>Forge</button>
+            </div>
+            <div class="filter-row-scroll">
+              <div class="el-filter" id="collection-el-filter" role="group" aria-label="Filter by element"></div>
+              <button class="chip chip-mine" id="btn-filter-mine">My creations</button>
+            </div>
+            <p class="collection-count" id="collection-count">36 cards · 72 owned</p>
+            <div class="card-grid card-grid--large" id="collection-grid"></div>
+            <div class="empty-note" id="collection-empty" hidden>Nothing in the archive matches that filter.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORGE ----------------------------------------------------------------->
+    <section id="screen-forge" class="screen screen-forge" aria-label="Card forge">
+      <div class="screen-shell">
+        <header class="screen-head">
+          <button class="icon-btn" data-back aria-label="Back"><svg class="ic"><use href="#i-back"/></svg></button>
+          <div class="screen-title">
+            <p class="eyebrow">The Card Forge</p>
+            <h2 id="forge-heading">Shape a legend</h2>
+          </div>
+          <button class="btn btn-ghost btn-xs" id="btn-forge-new">New</button>
+        </header>
+
+        <div class="screen-scroll forge-scroll">
+          <div class="forge-preview-zone">
+            <div class="forge-aura" aria-hidden="true"></div>
+            <div class="forge-preview" id="forge-preview"></div>
+            <div class="forge-art-tools">
+              <button class="tool-btn" id="btn-upload-art"><svg class="ic"><use href="#i-image"/></svg><span>Upload art</span></button>
+              <button class="tool-btn" id="btn-camera-art"><svg class="ic"><use href="#i-camera"/></svg><span>Camera</span></button>
+              <button class="tool-btn" id="btn-regen-art"><svg class="ic"><use href="#i-sparkle"/></svg><span>Re-roll</span></button>
+            </div>
+            <input type="file" id="file-gallery" accept="image/*" hidden>
+            <input type="file" id="file-camera" accept="image/*" capture="environment" hidden>
+          </div>
+
+          <form class="forge-form" id="forge-form" novalidate>
+            <div class="field">
+              <div class="field-label"><label for="forge-name">Card name</label><span id="forge-name-count">0/24</span></div>
+              <input class="text-input" id="forge-name" maxlength="24" placeholder="e.g. Emberfang Warden" autocomplete="off">
+            </div>
+
+            <div class="field">
+              <div class="field-label"><span>Element</span><span class="hint">Sets the card's aura</span></div>
+              <div class="element-picker" id="forge-elements" role="radiogroup" aria-label="Card element"></div>
+            </div>
+
+            <div class="field">
+              <div class="field-label"><span>Rarity</span><span class="hint" id="forge-rarity-hint">Common</span></div>
+              <div class="rarity-picker" id="forge-rarities" role="radiogroup" aria-label="Card rarity"></div>
+            </div>
+
+            <div class="field">
+              <div class="field-label"><span>Statistics</span><span class="hint">Aether · Attack · Health</span></div>
+              <div class="stat-steppers">
+                <div class="stepper" data-stat="cost">
+                  <span class="stepper-icon cost"><svg class="ic"><use href="#i-sparkle"/></svg></span>
+                  <span class="stepper-label">Aether</span>
+                  <div class="stepper-controls">
+                    <button type="button" data-step="-1" aria-label="Lower aether cost"><svg class="ic"><use href="#i-minus"/></svg></button>
+                    <output id="forge-cost">3</output>
+                    <button type="button" data-step="1" aria-label="Raise aether cost"><svg class="ic"><use href="#i-plus"/></svg></button>
+                  </div>
+                </div>
+                <div class="stepper" data-stat="atk">
+                  <span class="stepper-icon atk"><svg class="ic"><use href="#i-sword"/></svg></span>
+                  <span class="stepper-label">Attack</span>
+                  <div class="stepper-controls">
+                    <button type="button" data-step="-1" aria-label="Lower attack"><svg class="ic"><use href="#i-minus"/></svg></button>
+                    <output id="forge-atk">3</output>
+                    <button type="button" data-step="1" aria-label="Raise attack"><svg class="ic"><use href="#i-plus"/></svg></button>
+                  </div>
+                </div>
+                <div class="stepper" data-stat="hp">
+                  <span class="stepper-icon hp"><span class="heart-glyph">♥</span></span>
+                  <span class="stepper-label">Health</span>
+                  <div class="stepper-controls">
+                    <button type="button" data-step="-1" aria-label="Lower health"><svg class="ic"><use href="#i-minus"/></svg></button>
+                    <output id="forge-hp">4</output>
+                    <button type="button" data-step="1" aria-label="Raise health"><svg class="ic"><use href="#i-plus"/></svg></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label"><span>Kombat keywords</span><span class="hint" id="forge-kw-count">0 / 2</span></div>
+              <div class="keyword-picker" id="forge-keywords" role="group" aria-label="Card keywords"></div>
+              <p class="keyword-help" id="forge-keyword-help">Choose up to two abilities. Tap to learn what they do.</p>
+            </div>
+
+            <div class="field">
+              <div class="field-label"><label for="forge-flavor">Lore</label><span id="forge-flavor-count">0/120</span></div>
+              <textarea class="text-input text-area" id="forge-flavor" maxlength="120" rows="3" placeholder="A line the archive will remember…"></textarea>
+            </div>
+
+            <div class="forge-save-row">
+              <button type="button" class="btn btn-ghost" id="btn-forge-clear">Clear</button>
+              <button type="submit" class="btn btn-primary" id="btn-forge-save"><svg class="ic"><use href="#i-sparkle"/></svg><span>Forge card</span></button>
+            </div>
+            <p class="forge-note">Your card is saved on this device and added to your collection.</p>
+          </form>
+
+          <div class="forge-saved" id="forge-saved-wrap" hidden>
+            <div class="pool-head">
+              <div><p class="eyebrow">Your creations</p><h3>Forged cards</h3></div>
+              <span class="counter-pill" id="forge-saved-count">0</span>
+            </div>
+            <div class="saved-grid" id="forge-saved"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BATTLE ---------------------------------------------------------------->
+    <section id="screen-battle" class="screen screen-battle" aria-label="Kombat arena">
+      <div class="battle" id="battle">
+        <div class="arena-bg" aria-hidden="true">
+          <div class="arena-moon"></div>
+          <div class="arena-ridge r1"></div>
+          <div class="arena-ridge r2"></div>
+          <div class="arena-grid"></div>
+          <div class="arena-dust"></div>
+        </div>
+
+        <header class="battle-top">
+          <div class="hero-panel enemy">
+            <div class="hero-avatar enemy" id="battle-ai-avatar"></div>
+            <div class="hero-core">
+              <div class="hero-name-row"><span class="hero-name" id="battle-ai-name">The Ashen Warden</span><span class="hero-rank">Gate Keeper</span></div>
+              <div class="hp-track"><i class="hp-fill enemy" id="battle-ai-hp"></i><span class="hp-num" id="battle-ai-hp-text">30</span></div>
+            </div>
+            <div class="hero-piles">
+              <span class="pile" title="Cards in hand"><svg class="ic"><use href="#i-cards"/></svg><b id="battle-ai-hand">5</b></span>
+              <span class="pile" title="Cards in deck"><svg class="ic"><use href="#i-lock"/></svg><b id="battle-ai-deck">19</b></span>
+            </div>
+            <button class="icon-btn battle-menu" id="battle-menu" aria-label="Battle menu"><svg class="ic"><use href="#i-menu"/></svg></button>
+          </div>
+        </header>
+
+        <div class="arena" id="arena">
+          <div class="board-row enemy-row" id="board-ai" aria-label="Enemy lanes"></div>
+          <div class="rift">
+            <span class="rift-line"></span>
+            <span class="rift-gem">✦</span>
+            <span class="rift-line"></span>
+            <div class="turn-pill" id="turn-pill"><i></i><span>Your turn</span></div>
+            <div class="battle-feed" id="battle-feed" aria-live="polite"></div>
+          </div>
+          <div class="board-row player-row" id="board-player" aria-label="Your lanes"></div>
+          <div class="turn-banner" id="turn-banner" aria-hidden="true"><span></span></div>
+          <div class="target-arrows" id="target-arrows" aria-hidden="true"></div>
+        </div>
+
+        <div class="player-zone">
+          <div class="player-bar">
+            <div class="hero-mini">
+              <div class="hero-avatar player" id="battle-player-avatar"></div>
+              <div class="hero-core">
+                <div class="hero-name-row"><span class="hero-name" id="battle-player-name">Wanderer</span><span class="hero-rank" id="battle-player-rank">Ashwalker</span></div>
+                <div class="hp-track"><i class="hp-fill player" id="battle-player-hp"></i><span class="hp-num" id="battle-player-hp-text">30</span></div>
+              </div>
+            </div>
+            <div class="mana-panel">
+              <div class="mana-crystals" id="mana-crystals" aria-label="Aether available"></div>
+              <span class="mana-count" id="mana-count">1 / 1</span>
+            </div>
+            <button class="btn btn-end" id="btn-end-turn"><span>End turn</span><svg class="ic"><use href="#i-arrow"/></svg></button>
+          </div>
+          <div class="hand" id="hand" aria-label="Your hand"></div>
+        </div>
+
+        <div class="battle-tools">
+          <button class="tool-chip" id="btn-battle-help"><svg class="ic"><use href="#i-help"/></svg>Rules</button>
+          <span class="battle-hint" id="battle-hint">Tap a ready unit to strike.</span>
+          <button class="tool-chip danger" id="btn-concede">Concede</button>
+        </div>
+
+        <div class="result-overlay" id="result-overlay" hidden>
+          <div class="result-card" id="result-card">
+            <p class="eyebrow" id="result-eyebrow">The gate yields</p>
+            <h2 class="result-title" id="result-title">Victory</h2>
+            <div class="result-sigil" id="result-sigil">✦</div>
+            <p class="result-copy" id="result-copy">The Ashen Warden falls. Your legend is carved into the gate.</p>
+            <div class="result-stats" id="result-stats"></div>
+            <div class="result-actions">
+              <button class="btn btn-ghost" id="btn-result-home">Return home</button>
+              <button class="btn btn-primary" id="btn-rematch">Rematch<svg class="ic"><use href="#i-sword"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="sheet-backdrop" class="sheet-backdrop" hidden>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+  </div>
+  <div id="toast-root" class="toast-root" aria-live="polite"></div>
+  <div id="fx-root" class="fx-root" aria-hidden="true"></div>
+  <div class="screen-flash" id="screen-flash" aria-hidden="true"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
